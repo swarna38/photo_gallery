@@ -12,7 +12,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 if(empty($title) || empty($description) || !isset($image) || empty($image['name'])){
     echo "please fill in the all fields";
 }else{
-//check img have or not directory
+    //else part file upload processing 
+    //check img have or not directory
+
+    //Where to save the file indicate path
     $target_dir = 'assets/images/';
 
     //file image name 
@@ -30,16 +33,19 @@ if($image['size'] > 5000000){
 }elseif(!in_array($image['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
     echo "Invalid file type. Only JPEG, PNG, and GIF allowed.";
 }else{
+    //file upload process
     if(move_uploaded_file($image['tmp_name'], $target_file)){
+
         //data insert  file 
         //now() present date and time store for upload_date;
         $sql = $pdo->prepare("insert into images (title, description, filename, upload_date) values (?, ?, ?, now())");
+
+        //database save data
         $sql->execute([
             $title,
             $description,
             $unique_name,
         ]);
-        // echo "successfully image uploaded";
         header('Location:index_gallery.php');
     }else{
         echo "error uploading image";
